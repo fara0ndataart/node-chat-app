@@ -3,7 +3,6 @@ import * as UserRepository from '../users/user.repository';
 import ChatModel from './chat.model';
 import UserModel from '../users/user.model';
 import { Message } from '../../types';
-import { getChatByUserId } from './chat.repository';
 import { eventBus } from '../../constants';
 
 export const getAllChatRooms = () => ChatModel.query();
@@ -39,8 +38,6 @@ export const onUserJoinedRoom = async (id: string, userId: string) => {
 };
 
 export const onUserLeftRoom = async (id: string, userId: string) => {
-  // const chatRoom = await getChatRoomById(id as string);
-
   eventBus.emitSomeoneLeftRoom(id, userId)
 }
 
@@ -88,7 +85,6 @@ export const onUserUpdatedMessage = async (id: string, userId: string, messageId
 };
 
 export const onUserDeletedMessage = async (id: string, userId: string, messageId: string) => {
-  const chatRoom = await getChatByUserId(id, userId);
   const messages = <M extends Message>(chatRoomMessages: M[]): M[] =>
     chatRoomMessages.filter(message => message.id !== messageId);
   const messagesConverted = JSON.stringify(messages);

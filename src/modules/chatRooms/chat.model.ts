@@ -6,7 +6,6 @@ class ChatModel extends Model {
   }
 
   id!: number;
-
   name!: string;
   messages!: any;
   users!: any;

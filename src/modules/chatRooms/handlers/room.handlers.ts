@@ -2,8 +2,7 @@ import { Socket } from 'socket.io';
 import * as ChatService from '../chat.service';
 import { eventBus } from '../../../constants';
 import { CallbackFn, UserRoomActionCb } from '../../../types';
-import * as chatConstants from '../chat-constants'
-import { createUserDeletedMessageInRoomAction } from "../chat-constants";
+import * as chatConstants from '../chat-constants';
 
 export const handleJoinRoomAction = async (socket: Socket, msg: string, onSocketDestroyed: (cb: CallbackFn) => void) => {
   const { roomId, userId } = socket.handshake.query;
@@ -47,7 +46,6 @@ export const handleUpdateMessageAction = async (socket: Socket, msg: string, onS
 
 export const handleDeleteMessageAction = async (socket: Socket, msg: string, onSocketDestroyed: (cb: CallbackFn) => void) => {
   const { roomId, userId, messageId } = socket.handshake.query;
-
   const handleUserUpdatedMessageInRoom: UserRoomActionCb = ({ roomId, userId }) =>
     socket.emit(chatConstants.createUserDeletedMessageInRoomAction(), { roomId, userId });
 
