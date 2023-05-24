@@ -4,8 +4,13 @@ export async function up(knex: Knex): Promise<void> {
   return knex.schema.createTable('chat_rooms', function(table) {
     table.increments('id').primary();
     table.string('name').notNullable();
-    table.json('messages').defaultTo([]);
-    table.json('users').defaultTo([]);
+    table.integer('created_by')
+      .unsigned()
+      .notNullable()
+      .defaultTo(null)
+      .references('id')
+      .inTable('users')
+      .onDelete('CASCADE');
     table.timestamps(true, true);
   });
 }
