@@ -15,6 +15,7 @@ import { configureSocketIO } from './sockets'
 import usersRouter from './modules/users/routes';
 import tokensRouter from './modules/tokens/routes';
 import chatsRouter from './modules/chatRooms/routes';
+import messagesRouter from './modules/messages/routes';
 
 // middleware
 dotenv.config();
@@ -32,6 +33,7 @@ app.use(passport.initialize());
 app.use(usersRouter);
 app.use('/token', tokensRouter);
 app.use('/chats', chatsRouter);
+app.use('/messages', messagesRouter);
 
 // app.use((err: Error, req: Request, res: Response) => {
 //   console.error(err.stack);

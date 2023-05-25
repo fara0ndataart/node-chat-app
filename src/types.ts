@@ -1,9 +1,10 @@
 export type CallbackFn = () => void;
 
-export type User = {
+export interface User {
   id?: number,
   email?: string,
   password?: string
+  role?: string
 }
 
 export interface PairTokens {
@@ -11,28 +12,7 @@ export interface PairTokens {
   refreshToken: string
 }
 
-export interface Message {
-  id: string;
-  from: {
-    id: number;
-    email: string;
-    role: string;
-    created_at: string;
-    updated_at: string;
-  };
-  to: {
-    id: number;
-    email: string;
-    role: string;
-    created_at: string;
-    updated_at: string;
-  } | null;
-  text: string;
-  created_at: string;
-  updated_at: string;
-}
-
-export type UserRoomActionDTO = {
+export interface UserRoomActionDTO {
   roomId: string,
   userId: string,
   messages: any[]

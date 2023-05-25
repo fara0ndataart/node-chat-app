@@ -1,5 +1,5 @@
 import { Model } from 'objection';
-import ChatModel from './chat.model';
+import ChatModel from '../chatRooms/chat.model';
 import UserModel from '../users/user.model';
 
 class RoomMemberModel extends Model {
@@ -30,20 +30,6 @@ class RoomMemberModel extends Model {
           from: 'room_members.user_id',
           to: 'users.id',
         },
-      },
-    };
-  }
-
-  static get jsonSchema() {
-    return {
-      type: 'object',
-      required: ['room_id', 'user_id'],
-      properties: {
-        id: { type: 'integer' },
-        room_id: { type: 'integer' },
-        user_id: { type: 'integer' },
-        created_at: { type: 'string', format: 'date-time' },
-        updated_at: { type: 'string', format: 'date-time' },
       },
     };
   }

@@ -7,7 +7,7 @@ const config: { [key: string]: Knex.Config } = {
     connection: {
       database: 'postgres',
       user: 'postgres',
-      password: 'secret',
+      password: '1337',
     },
     pool: {
       min: 2,
@@ -22,5 +22,7 @@ const config: { [key: string]: Knex.Config } = {
     ...knexSnakeCaseMappers,
   },
 };
+
+
 
 export default config;

@@ -4,7 +4,7 @@ export async function up(knex: Knex): Promise<void> {
   return knex.schema.createTable('chat_rooms', function(table) {
     table.increments('id').primary();
     table.string('name').notNullable();
-    table.integer('created_by')
+    table.integer('creator_id')
       .unsigned()
       .notNullable()
       .defaultTo(null)

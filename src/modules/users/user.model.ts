@@ -1,7 +1,7 @@
 import { Model } from 'objection';
 import ChatModel from '../chatRooms/chat.model';
-import MessageModel from '../chatRooms/message.model';
-import RoomMemberModel from '../chatRooms/room-member.model';
+import MessageModel from '../messages/message.model';
+import RoomMemberModel from '../roomMembers/room-member.model';
 
 class UserModel extends Model {
   id!: number;
@@ -15,6 +15,14 @@ class UserModel extends Model {
     return 'users';
   }
 
+  $formatJson(json: any) {
+    const user = super.$formatJson(json);
+
+    delete user.password;
+
+    return user;
+  }
+
   static get relationMappings() {
     return {
       chatRooms: {
@@ -22,7 +30,7 @@ class UserModel extends Model {
         modelClass: ChatModel,
         join: {
           from: 'users.id',
-          to: 'chat_rooms.created_by',
+          to: 'chat_rooms.creator_id',
         },
       },
       sentMessages: {
@@ -51,21 +59,6 @@ class UserModel extends Model {
       },
     };
   }
-
-  static get jsonSchema() {
-    return {
-      type: 'object',
-      required: ['email', 'password'],
-      properties: {
-        id: { type: 'integer' },
-        email: { type: 'string', minLength: 1, maxLength: 255 },
-        password: { type: 'string', hidden: true, minLength: 1, maxLength: 255 },
-        role: { type: 'string', enum: ['guest'], default: 'guest' },
-        created_at: { type: 'string', format: 'date-time' },
-        updated_at: { type: 'string', format: 'date-time' },
-      },
-    };
-  };
 }
 
 export default UserModel;

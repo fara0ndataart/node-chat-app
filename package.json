@@ -17,6 +17,7 @@
     "prepare": "husky install",
     "prettier": "prettier --write \"**/*.js\"",
     "pre-commit": "lint-staged",
+    "migrate:make": "knex migrate:make --knexfile ./src/knexfile.ts",
     "migrate:run": "npx knex migrate:latest --knexfile ./src/knexfile.ts",
     "migrate:rollback": "npx knex migrate:rollback --knexfile ./src/knexfile.ts",
     "migrate:seed": "npx knex seed:run --knexfile ./src/knexfile.ts"

@@ -1,12 +1,12 @@
 import { Model } from 'objection';
 import UserModel from '../users/user.model';
-import RoomMemberModel from './room-member.model';
-import MessageModel from './message.model';
+import RoomMemberModel from '../roomMembers/room-member.model';
+import MessageModel from '../messages/message.model';
 
 class ChatModel extends Model {
   id!: number;
   name!: string;
-  created_by?: number;
+  creator_id?: number;
   created_at?: Date;
   updated_at?: Date;
 
@@ -20,7 +20,7 @@ class ChatModel extends Model {
         relation: Model.BelongsToOneRelation,
         modelClass: UserModel,
         join: {
-          from: 'chat_rooms.created_by',
+          from: 'chat_rooms.creator_id',
           to: 'users.id',
         },
       },
@@ -39,20 +39,6 @@ class ChatModel extends Model {
           from: 'chat_rooms.id',
           to: 'messages.room_id',
         },
-      },
-    };
-  }
-
-  static get jsonSchema() {
-    return {
-      type: 'object',
-      required: ['name'],
-      properties: {
-        id: { type: 'integer' },
-        name: { type: 'string', minLength: 1, maxLength: 255 },
-        created_by: { type: ['integer', 'null'] },
-        created_at: { type: 'string', format: 'date-time' },
-        updated_at: { type: 'string', format: 'date-time' },
       },
     };
   }

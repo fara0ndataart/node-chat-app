@@ -1,9 +1,30 @@
 import ChatModel from './chat.model';
 
-export const getChatByUserId = (id: string, userId: string) => {
-  return ChatModel.query()
-    .select('*')
-    .where({ id })
-    .whereRaw(`messages::json->0->'from'->>'id' = ?`, userId)
-    .first();
-};
+export const getAllChatRooms = () =>
+  ChatModel
+    .query()
+    .withGraphFetched('[creator]');
+
+export const getChatRoomById = (id: string) =>
+  ChatModel
+    .query()
+    .findById(id)
+    .withGraphFetched('[creator]');
+
+export const createChatRoom = (payload: Pick<ChatModel, 'name' | 'creator_id'>) =>
+  ChatModel
+    .query()
+    .insertAndFetch(payload)
+    .withGraphFetched('[creator]');
+
+export const updateChatRoomById = (id: string, name: string) =>
+  ChatModel
+    .query()
+    .findById(id)
+    .patchAndFetchById(id, { name })
+    .withGraphFetched('[creator]');
+
+export const deleteChatRoomById = (id: string) =>
+  ChatModel
+    .query()
+    .deleteById(id);

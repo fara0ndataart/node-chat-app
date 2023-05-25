@@ -1,9 +1,8 @@
 import { EventEmitter } from 'events';
 import { UserRoomActionCb, UserRoomActionDTO } from './types';
 import * as chatConstants from "./modules/chatRooms/chat-constants"
-import { createUserDeletedMessageInRoomActionId } from "./modules/chatRooms/chat-constants";
 
-export class EventBus {
+class EventBus {
   private emitter: EventEmitter;
 
   constructor() {
@@ -60,3 +59,5 @@ export class EventBus {
     this.emitter.emit(chatConstants.createUserDeletedMessageInRoomActionId(roomId), { roomId } as UserRoomActionDTO);
   }
 }
+
+export const eventBus = new EventBus();
