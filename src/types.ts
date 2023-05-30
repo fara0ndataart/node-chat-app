@@ -1,3 +1,5 @@
+import { Socket } from 'socket.io';
+
 export type CallbackFn = () => void;
 
 export interface User {
@@ -14,8 +16,9 @@ export interface PairTokens {
 
 export interface UserRoomActionDTO {
   roomId: string,
-  userId: string,
-  messages: any[]
+  senderId: string,
+  receiverId: string,
+  text: string
 }
 
-export type UserRoomActionCb = (Payload: UserRoomActionDTO) => void;
+export type UserRoomActionCb = (socket: Socket, Payload: UserRoomActionDTO) => void;

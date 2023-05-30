@@ -5,10 +5,11 @@ export const getAllRoomMembers = () =>
     .query()
     .withGraphFetched('[chatRoom, user]');
 
-export const getRoomMemberById = (id: string) =>
+export const getRoomMemberById = (userId: string) =>
   RoomMemberModel
     .query()
-    .findById(id)
+    .where('user_id', userId)
+    .first()
     .withGraphFetched('[chatRoom, user]');
 
 export const addMemberToRoom = (payload: object) =>
