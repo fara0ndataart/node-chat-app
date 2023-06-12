@@ -18,10 +18,11 @@ export async function up(knex: Knex): Promise<void> {
       .references('id')
       .inTable('users')
       .onDelete('CASCADE');
+    table.index('room_id');
+    table.index('user_id');
     table.timestamps(true, true);
   });
 }
-
 
 export async function down(knex: Knex): Promise<void> {
   return knex.schema.dropTableIfExists('room_members');

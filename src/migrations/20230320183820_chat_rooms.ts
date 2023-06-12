@@ -11,6 +11,7 @@ export async function up(knex: Knex): Promise<void> {
       .references('id')
       .inTable('users')
       .onDelete('CASCADE');
+    table.index('creator_id');
     table.timestamps(true, true);
   });
 }

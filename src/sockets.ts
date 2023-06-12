@@ -1,36 +1,27 @@
 import { Server } from 'http';
-import { Server as SocketIOServer, Socket } from 'socket.io';
+import { Server as SocketIOServer } from 'socket.io';
 import config from './config';
 import * as RoomHandlers from './modules/chatRooms/handlers';
-import type { CallbackFn } from './types';
-
-const unsubscribedListeners: CallbackFn[] = [];
-const onSocketDestroyed = (cb: CallbackFn): void => {
-  unsubscribedListeners.push(cb);
-};
-const handleDisconnectAction = (socket: Socket) => {
-  console.log(`Client disconnected: ${socket.id}`);
-  unsubscribedListeners.forEach(fn => fn());
-};
-
+import { SocketCleaner } from './sockets-cleaner';
+import { subscribeUserToAllEventsInAllRooms } from './modules/chatRooms/chat.service'
+const handleDisconnectAction = async (cleaner: SocketCleaner) => await cleaner.cleanupAll();
 const registerSocketEvents = (io: SocketIOServer) => {
   io.on('connection', (socket) => {
     console.log(`New client connected: ${socket.id}`);
 
-    socket.on('join-room', (msg) => RoomHandlers.handleJoinRoomAction(socket, msg, onSocketDestroyed));
-    socket.on('leave-room', (msg) => RoomHandlers.handleLeaveRoomAction(socket, msg, onSocketDestroyed));
-    socket.on('send-message', (msg) => RoomHandlers.handleSendMessageAction(socket, msg, onSocketDestroyed));
-    socket.on('update-message', (msg) => RoomHandlers.handleUpdateMessageAction(socket, msg, onSocketDestroyed));
-    socket.on('delete-message', (msg) => RoomHandlers.handleDeleteMessageAction(socket, msg, onSocketDestroyed));
-    socket.on('disconnect', () => handleDisconnectAction(socket));
+    socket.on('join-room', () => RoomHandlers.handleJoinRoomAction(socket, cleaner));
+    socket.on('leave-room', () => RoomHandlers.handleLeaveRoomAction(socket, cleaner));
+    socket.on('send-message', (msg) => RoomHandlers.handleSendMessageAction(socket, msg));
+    socket.on('update-message', (msg) => RoomHandlers.handleUpdateMessageAction(socket, msg));
+    socket.on('delete-message', () => RoomHandlers.handleDeleteMessageAction(socket));
+    socket.on('disconnect', () => handleDisconnectAction(cleaner));
   });
 };
-
 export const configureSocketIO = (server: Server): SocketIOServer => {
   const io = new SocketIOServer(server, {
     cors: {
       origin: `http://localhost:${config.port}`,
-    }
+    },
   });
 
   registerSocketEvents(io);

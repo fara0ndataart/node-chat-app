@@ -24,11 +24,13 @@ export async function up(knex: Knex): Promise<void> {
       .references('id')
       .inTable('chat_rooms')
       .onDelete('CASCADE');
+    table.index('sender_id');
+    table.index('receiver_id');
+    table.index('room_id');
     table.string('text').notNullable().defaultTo('');
     table.timestamps(true, true);
   });
 }
-
 
 export async function down(knex: Knex): Promise<void> {
   return knex.schema.dropTableIfExists('messages');

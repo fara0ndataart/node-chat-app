@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 import { UserRoomActionCb, UserRoomActionDTO } from './types';
 import * as chatConstants from './modules/chatRooms/chat-constants';
+import { SocketCleaner } from './sockets-cleaner';
 
 class EventBus {
   private emitter: EventEmitter;
@@ -15,27 +16,32 @@ class EventBus {
     return () => this.emitter.removeListener(actionName, cb);
   }
 
-  onSomeoneJoinedRoom(roomId: string, cb: UserRoomActionCb) {
-    return this.onSomeoneDidActionInRoom(cb, chatConstants.createUserJoinRoomActionId(roomId));
+  onSomeoneJoinedRoom(roomId: string | number, cb: UserRoomActionCb, cleaner: SocketCleaner) {
+    const action = chatConstants.createUserJoinRoomActionId(roomId);
+    const clean = this.onSomeoneDidActionInRoom(cb, action);
+
+    cleaner.registerCleaner(action, clean)
+
+    return clean
   }
 
-  emitSomeoneJoinedRoom(roomId: string, senderId: string) {
+  emitSomeoneJoinedRoom(roomId: string | number, senderId: string) {
     this.emitter.emit(chatConstants.createUserJoinRoomActionId(roomId), { roomId, senderId } as UserRoomActionDTO);
   }
 
-  onSomeoneLeftRoom(roomId: string, cb: UserRoomActionCb) {
+  onSomeoneLeftRoom(roomId: string | number, cb: UserRoomActionCb) {
     return this.onSomeoneDidActionInRoom(cb, chatConstants.createUserLeaveRoomActionId(roomId));
   }
 
-  emitSomeoneLeftRoom(roomId: string, senderId: string) {
+  emitSomeoneLeftRoom(roomId: string | number, senderId: string) {
     this.emitter.emit(chatConstants.createUserLeaveRoomActionId(roomId), { roomId, senderId } as UserRoomActionDTO);
   }
 
-  onSomeoneWroteInRoom(roomId: string, cb: UserRoomActionCb) {
+  onSomeoneWroteInRoom(roomId: string | number, cb: UserRoomActionCb) {
     return this.onSomeoneDidActionInRoom(cb, chatConstants.createUserWroteInRoomActionId(roomId));
   }
 
-  emitSomeoneWroteInRoom(roomId: string, senderId: string, receiverId: string, text: string) {
+  emitSomeoneWroteInRoom(roomId: string | number, senderId: string, receiverId: string, text: string) {
     this.emitter.emit(chatConstants.createUserWroteInRoomActionId(roomId), {
       roomId,
       senderId,
@@ -44,19 +50,19 @@ class EventBus {
     } as UserRoomActionDTO);
   }
 
-  onSomeoneUpdatedMessageInRoom(roomId: string, cb: UserRoomActionCb) {
+  onSomeoneUpdatedMessageInRoom(roomId: string | number, cb: UserRoomActionCb) {
     return this.onSomeoneDidActionInRoom(cb, chatConstants.createUserUpdatedMessageInRoomActionId(roomId));
   }
 
-  emitSomeoneUpdatedMessageInRoom(roomId: string) {
+  emitSomeoneUpdatedMessageInRoom(roomId: string | number) {
     this.emitter.emit(chatConstants.createUserUpdatedMessageInRoomActionId(roomId), { roomId } as UserRoomActionDTO);
   }
 
-  onSomeoneDeletedMessageInRoom(roomId: string, cb: UserRoomActionCb) {
+  onSomeoneDeletedMessageInRoom(roomId: string | number, cb: UserRoomActionCb) {
     return this.onSomeoneDidActionInRoom(cb, chatConstants.createUserDeletedMessageInRoomActionId(roomId));
   }
 
-  emitSomeoneDeletedMessageInRoom(roomId: string) {
+  emitSomeoneDeletedMessageInRoom(roomId: string | number) {
     this.emitter.emit(chatConstants.createUserDeletedMessageInRoomActionId(roomId), { roomId } as UserRoomActionDTO);
   }
 }

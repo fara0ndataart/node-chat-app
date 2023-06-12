@@ -5,6 +5,11 @@ export const getAllRoomMembers = () =>
     .query()
     .withGraphFetched('[chatRoom, user]');
 
+export const getAllJoinedRoomsByUserId = (userId: string) =>
+  RoomMemberModel
+    .query()
+    .where('user_id', userId)
+
 export const getRoomMemberById = (userId: string) =>
   RoomMemberModel
     .query()
@@ -19,7 +24,8 @@ export const addMemberToRoom = (payload: object) =>
     .withGraphFetched('[chatRoom, user]');
 
 export const deleteRoomMemberById = (roomId: string, userId: string) =>
-  RoomMemberModel.query()
+  RoomMemberModel
+    .query()
     .where('room_id', roomId)
     .where('user_id', userId)
     .delete()
